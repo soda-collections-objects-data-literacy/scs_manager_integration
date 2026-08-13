@@ -26,6 +26,9 @@ Base: `/ocs/v2.php/apps/scs_manager_integration/api/v1`
 | DELETE | `/folders/{id}` | **admin** | Deregister; `?deleteStorage=1` removes Team Folder |
 | GET | `/folders/{id}/feed` | user | Activity items (`limit`, `since`) |
 
+Feed items include `subject` (formatted sentence), `subjectKey` (raw activity
+subject, e.g. `created_self`), `type`, `timestamp`, and `object`.
+
 ### Create body
 
 ```json
@@ -79,3 +82,14 @@ Moves private home `SCS-Share` contents into the Team Folder under
 3. Optionally run `occ scs_manager_integration:ensure-platform-share`.
 
 If migrating from the former `scs_project_feeds` app: disable/remove the old app, enable this one, and re-run the platform-share command.
+
+If OCS `GET /folders` returns **500** and Nextcloud logs
+`Class "OCA\Scs_manager_integration\Controller\ApiController" does not exist`,
+the bind mount is stale (often `findmnt` shows `//deleted` after the host
+directory was replaced). Recreate the FPM container from the deployment root:
+
+```bash
+docker compose up -d --force-recreate nextcloud--nextcloud
+```
+
+Confirm `lib/` is visible in the container and `occ list scs_manager_integration` loads.

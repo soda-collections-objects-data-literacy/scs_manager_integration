@@ -68,6 +68,7 @@ class FolderFeedService {
 				'type' => (string)$row['type'],
 				'timestamp' => (int)$row['timestamp'],
 				'user' => (string)$row['user'],
+				'subjectKey' => (string)$row['subject'],
 				'subject' => $this->formatSubject((string)$row['subject'], $subjectParams, $path),
 				'app' => (string)$row['app'],
 				'object' => [
