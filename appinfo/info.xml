@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>scs_manager_integration</id>
+	<name>SCS Manager Integration</name>
+	<summary>Nextcloud integration for SCS Manager (Team Folders, project ACLs, activity feeds)</summary>
+	<description><![CDATA[Bridges the SCS Manager with Nextcloud Team Folders (Group Folders): register project folders with a stable machine name and editable display label, sync group ACLs, and expose a per-user OCS API for listing folders and reading activity inside them.
+
+Managed by SCS Manager. Users keep normal access to files inside project folders; renaming or deleting registrations is not offered in the Files UI.]]></description>
+	<version>0.2.0</version>
+	<licence>agpl</licence>
+	<author mail="scs@sammlungen.io">SODa SCS</author>
+	<namespace>ScsManagerIntegration</namespace>
+	<category>files</category>
+	<category>integration</category>
+	<bugs>https://github.com/soda-collections-objects-data-literacy/soda_scs_manager_deployment/issues</bugs>
+	<dependencies>
+		<nextcloud min-version="30" max-version="34"/>
+	</dependencies>
+
+	<commands>
+		<command>OCA\ScsManagerIntegration\Command\EnsurePlatformShareCommand</command>
+		<command>OCA\ScsManagerIntegration\Command\MigratePrivateScsShareCommand</command>
+	</commands>
+</info>
