@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\ScsManagerIntegration\Controller;
 
+use OCA\ScsManagerIntegration\Exception\FolderConflictException;
 use OCA\ScsManagerIntegration\Service\FeedFolderService;
 use OCA\ScsManagerIntegration\Service\FolderFeedService;
 use OCP\AppFramework\Db\DoesNotExistException;
@@ -12,6 +13,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSBadRequestException;
+use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCS\OCSForbiddenException;
 use OCP\AppFramework\OCS\OCSNotFoundException;
 use OCP\AppFramework\OCSController;
@@ -115,6 +117,8 @@ class ApiController extends OCSController {
 				$groupFolderId,
 				$machineName !== '' ? $machineName : null,
 			);
+		} catch (FolderConflictException $e) {
+			throw new OCSException($e->getMessage(), Http::STATUS_CONFLICT);
 		} catch (RuntimeException $e) {
 			throw new OCSBadRequestException($e->getMessage());
 		}
@@ -162,6 +166,8 @@ class ApiController extends OCSController {
 			}
 		} catch (DoesNotExistException) {
 			throw new OCSNotFoundException('Managed folder not found');
+		} catch (FolderConflictException $e) {
+			throw new OCSException($e->getMessage(), Http::STATUS_CONFLICT);
 		} catch (RuntimeException $e) {
 			throw new OCSBadRequestException($e->getMessage());
 		}

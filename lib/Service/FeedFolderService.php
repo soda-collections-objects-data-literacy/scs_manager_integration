@@ -6,6 +6,7 @@ namespace OCA\ScsManagerIntegration\Service;
 
 use OCA\ScsManagerIntegration\Db\FeedFolder;
 use OCA\ScsManagerIntegration\Db\FeedFolderMapper;
+use OCA\ScsManagerIntegration\Exception\FolderConflictException;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -67,6 +68,11 @@ class FeedFolderService {
 				$this->groupFolderBridge->syncGroups($groupFolderId, $groups);
 			}
 		} elseif ($createGroupFolder) {
+			// createWithGroups() would reuse the existing folder and replace its
+			// groups, handing another project's files to this project.
+			if ($this->groupFolderBridge->findByMountPoint($label) !== null) {
+				throw new FolderConflictException('Team Folder "' . $label . '" already exists');
+			}
 			$groupFolderId = $this->groupFolderBridge->createWithGroups($label, $groups);
 		} else {
 			$gf = $this->groupFolderBridge->findByMountPoint($label);
@@ -119,10 +125,14 @@ class FeedFolderService {
 			try {
 				$conflict = $this->mapper->findByFolderName($label);
 				if ($conflict->getId() !== $feed->getId()) {
-					throw new RuntimeException('Another managed folder already uses label "' . $label . '"');
+					throw new FolderConflictException('Another managed folder already uses label "' . $label . '"');
 				}
 			} catch (DoesNotExistException) {
 				// ok
+			}
+			$existing = $this->groupFolderBridge->findByMountPoint($label);
+			if ($existing !== null && $existing->id !== $feed->getGroupFolderId()) {
+				throw new FolderConflictException('Team Folder "' . $label . '" already exists');
 			}
 			$this->groupFolderBridge->rename($feed->getGroupFolderId(), $label);
 			$feed->setFolderName($label);
