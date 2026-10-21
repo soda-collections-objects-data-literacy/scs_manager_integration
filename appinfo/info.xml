@@ -15,7 +15,7 @@ Managed by SCS Manager. Users keep normal access to files inside project folders
 	<category>integration</category>
 	<bugs>https://github.com/soda-collections-objects-data-literacy/soda_scs_manager_deployment/issues</bugs>
 	<dependencies>
-		<nextcloud min-version="30" max-version="34"/>
+		<nextcloud min-version="30" max-version="35"/>
 	</dependencies>
 
 	<commands>
