@@ -78,8 +78,10 @@ Moves private home `SCS-Share` contents into the Team Folder under
 ## Deploy
 
 1. Volume-mount this directory to `/var/www/html/custom_apps/scs_manager_integration`.
-2. `occ app:enable scs_manager_integration`
+2. Install and enable Team Folders, then this app. The post-install hook does both: `hooks/post-installation/install-scs-manager-integration.sh`.
 3. Optionally run `occ scs_manager_integration:ensure-platform-share`.
+
+`occ app:enable scs_manager_integration` alone does not install `groupfolders`. Without that app, folder registration cannot create a mount.
 
 If migrating from the former `scs_project_feeds` app: disable/remove the old app, enable this one, and re-run the platform-share command.
 
